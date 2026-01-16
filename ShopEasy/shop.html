@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - ShopEasy</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">ShopEasy</a>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                <a href="shop.html" class="active"><i class="fas fa-shopping-bag"></i> Shop</a>
+                <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart <span id="cart-count" class="cart-count">0</span></a>
+                <div class="auth-links">
+                    <a href="login.html" id="login-btn"><i class="fas fa-user"></i> Login</a>
+                </div>
+            </div>
+            <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <section class="shop-header">
+        <div class="container">
+            <h1>Our Products</h1>
+            <p>Discover amazing products at great prices</p>
+            <div class="shop-controls">
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Search products...">
+                    <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
+                </div>
+                <select id="category-filter" onchange="filterProducts()">
+                    <option value="">All Categories</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Fashion">Fashion</option>
+                    <option value="Home">Home</option>
+                    <option value="Sports">Sports</option>
+                </select>
+                <select id="sort-by" onchange="sortProducts()">
+                    <option value="name">Sort by Name</option>
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <section class="products-section">
+        <div class="container">
+            <div class="products-grid" id="products-grid">
+                <!-- Products will be loaded here -->
+            </div>
+            <div class="text-center" style="margin-top: 2rem;">
+                <button onclick="showAllProducts()" class="btn btn-secondary">Show All Products</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ShopEasy</h3>
+                    <p>Your trusted online shopping destination</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="shop.html">Shop</a>
+                    <a href="cart.html">Cart</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Email: mrymhassan@shopeasy.com</p>
+                    <p>Phone: (+92) 321-8121137</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ShopEasy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // PRODUCT DATA FROM YOUR DATABASE
+        const allProducts = [
+            {
+                id: 1,
+                name: "Wireless Headphones",
+                description: "Noise cancelling wireless headphones with 30hr battery",
+                price: 199.99,
+                image_url: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
+                category: "Electronics",
+                stock: 50
+            },
+            {
+                id: 2,
+                name: "Running Shoes",
+                description: "Lightweight running shoes with cushion technology",
+                price: 129.99,
+                image_url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+                category: "Fashion",
+                stock: 100
+            },
+            {
+                id: 3,
+                name: "Coffee Maker",
+                description: "Programmable coffee maker with thermal carafe",
+                price: 89.99,
+                image_url: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085",
+                category: "Home",
+                stock: 30
+            },
+            {
+                id: 4,
+                name: "Yoga Mat",
+                description: "Non-slip yoga mat with carrying strap",
+                price: 34.99,
+                image_url: "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0",
+                category: "Sports",
+                stock: 200
+            },
+            {
+                id: 5,
+                name: "Smart Watch",
+                description: "Fitness tracker with heart rate monitor",
+                price: 299.99,
+                image_url: "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
+                category: "Electronics",
+                stock: 25
+            },
+            {
+                id: 6,
+                name: "Backpack",
+                description: "Water-resistant backpack with laptop compartment",
+                price: 59.99,
+                image_url: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62",
+                category: "Fashion",
+                stock: 75
+            },
+            {
+                id: 7,
+                name: "Desk Lamp",
+                description: "Adjustable LED desk lamp with touch control",
+                price: 45.99,
+                image_url: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c",
+                category: "Home",
+                stock: 150
+            },
+            {
+                id: 8,
+                name: "Basketball",
+                description: "Official size and weight basketball",
+                price: 29.99,
+                image_url: "https://images.unsplash.com/photo-1546519638-68e109498ffc",
+                category: "Sports",
+                stock: 80
+            }
+        ];
+
+        let filteredProducts = [...allProducts];
+        let showingAll = false;
+
+        // Display products
+        function displayProducts(productsToShow) {
+            const grid = document.getElementById('products-grid');
+            
+            if (productsToShow.length === 0) {
+                grid.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; grid-column: 1/-1;">
+                        <h3>No products found</h3>
+                        <p>Try a different search or filter</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = productsToShow.map(product => `
+                <div class="product-card">
+                    <img src="${product.image_url}" alt="${product.name}" 
+                         style="width:100%; height:200px; object-fit:cover;">
+                    <div class="product-info">
+                        <h3>${product.name}</h3>
+                        <div class="product-category">${product.category}</div>
+                        <p class="product-description">${product.description.substring(0, 80)}...</p>
+                        <div class="product-price">$${product.price.toFixed(2)}</div>
+                        <div class="product-stock">In Stock: ${product.stock}</div>
+                        <button class="btn btn-primary" onclick="addToCart(${product.id})">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter by category
+        function filterProducts() {
+            const category = document.getElementById('category-filter').value;
+            
+            if (!category) {
+                filteredProducts = [...allProducts];
+            } else {
+                filteredProducts = allProducts.filter(p => p.category === category);
+            }
+            
+            applySorting();
+            displayProducts(showingAll ? filteredProducts : filteredProducts.slice(0, 8));
+        }
+
+        // Search products
+        function searchProducts() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            
+            filteredProducts = allProducts.filter(p => 
+                p.name.toLowerCase().includes(searchTerm) || 
+                p.description.toLowerCase().includes(searchTerm) ||
+                p.category.toLowerCase().includes(searchTerm)
+            );
+            
+            applySorting();
+            displayProducts(showingAll ? filteredProducts : filteredProducts.slice(0, 8));
+        }
+
+        // Sort products
+        function sortProducts() {
+            applySorting();
+            displayProducts(showingAll ? filteredProducts : filteredProducts.slice(0, 8));
+        }
+
+        function applySorting() {
+            const sortBy = document.getElementById('sort-by').value;
+            
+            filteredProducts.sort((a, b) => {
+                switch(sortBy) {
+                    case 'price_asc':
+                        return a.price - b.price;
+                    case 'price_desc':
+                        return b.price - a.price;
+                    case 'name':
+                    default:
+                        return a.name.localeCompare(b.name);
+                }
+            });
+        }
+
+        // Show all products
+        function showAllProducts() {
+            showingAll = true;
+            displayProducts(filteredProducts);
+            document.querySelector('.btn-secondary').style.display = 'none';
+        }
+
+        // Cart functionality
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        function addToCart(productId) {
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) return;
+            
+            // Check if already in cart
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    quantity: 1
+                });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            
+            // Show notification
+            const notification = document.createElement('div');
+            notification.textContent = `Added ${product.name} to cart!`;
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px;
+                background: #28a745; color: white; padding: 15px;
+                border-radius: 5px; z-index: 9999;
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 2000);
+        }
+
+        function updateCartCount() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').textContent = totalItems;
+        }
+
+        // Mobile menu
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.querySelector('.nav-links').classList.toggle('show');
+        });
+
+        // Enter key for search
+        document.getElementById('search-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchProducts();
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Show first 8 products
+            displayProducts(filteredProducts.slice(0, 8));
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>

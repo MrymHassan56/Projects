@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopEasy - Online Store</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">ShopEasy</a>
+            <div class="nav-links">
+                <a href="index.html" class="active"><i class="fas fa-home"></i> Home</a>
+                <a href="shop.html"><i class="fas fa-shopping-bag"></i> Shop</a>
+                <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart <span id="cart-count" class="cart-count">0</span></a>
+                <div class="auth-links">
+                    <a href="login.html" id="login-btn"><i class="fas fa-user"></i> Login</a>
+                </div>
+            </div>
+            <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to ShopEasy</h1>
+            <p>Your one-stop destination for all shopping needs</p>
+            <a href="#products" class="btn btn-primary">Shop Now</a>
+        </div>
+    </section>
+
+    <section class="featured-products" id="products">
+        <div class="container">
+            <h2>Featured Products</h2>
+            <div class="products-grid" id="featured-products">
+                <!-- Products loaded by JavaScript -->
+            </div>
+            <div class="text-center">
+                <button onclick="loadMore()" class="btn btn-secondary">Load More Products</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="categories">
+        <div class="container">
+            <h2>Shop by Category</h2>
+            <div class="categories-grid">
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661" alt="Electronics">
+                    <h3>Electronics</h3>
+                    <p>Latest gadgets and devices</p>
+                </div>
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1445205170230-053b83016050" alt="Fashion">
+                    <h3>Fashion</h3>
+                    <p>Trendy clothing & accessories</p>
+                </div>
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1556228453-efd6c1ff04f6" alt="Home">
+                    <h3>Home & Living</h3>
+                    <p>Furniture & decor items</p>
+                </div>
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1536922246289-88c42f957773" alt="Sports">
+                    <h3>Sports</h3>
+                    <p>Equipment & accessories</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ShopEasy</h3>
+                    <p>Your trusted online shopping destination</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="#products">Shop</a>
+                    <a href="cart.html">Cart</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Email: mrymhassan@shopeasy.com</p>
+                    <p>Phone: (+92) 321-8121137</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ShopEasy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // HARDCODED PRODUCTS FROM YOUR DATABASE
+        const products = [
+            {
+                id: 1,
+                name: "Wireless Headphones",
+                description: "Noise cancelling wireless headphones with 30hr battery",
+                price: 199.99,
+                image_url: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
+                category: "Electronics",
+                stock: 50
+            },
+            {
+                id: 2,
+                name: "Running Shoes",
+                description: "Lightweight running shoes with cushion technology",
+                price: 129.99,
+                image_url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+                category: "Fashion",
+                stock: 100
+            },
+            {
+                id: 3,
+                name: "Coffee Maker",
+                description: "Programmable coffee maker with thermal carafe",
+                price: 89.99,
+                image_url: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085",
+                category: "Home",
+                stock: 30
+            },
+            {
+                id: 4,
+                name: "Yoga Mat",
+                description: "Non-slip yoga mat with carrying strap",
+                price: 34.99,
+                image_url: "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0",
+                category: "Sports",
+                stock: 200
+            },
+            {
+                id: 5,
+                name: "Smart Watch",
+                description: "Fitness tracker with heart rate monitor",
+                price: 299.99,
+                image_url: "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
+                category: "Electronics",
+                stock: 25
+            },
+            {
+                id: 6,
+                name: "Backpack",
+                description: "Water-resistant backpack with laptop compartment",
+                price: 59.99,
+                image_url: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62",
+                category: "Fashion",
+                stock: 75
+            },
+            {
+                id: 7,
+                name: "Desk Lamp",
+                description: "Adjustable LED desk lamp with touch control",
+                price: 45.99,
+                image_url: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c",
+                category: "Home",
+                stock: 150
+            },
+            {
+                id: 8,
+                name: "Basketball",
+                description: "Official size and weight basketball",
+                price: 29.99,
+                image_url: "https://images.unsplash.com/photo-1546519638-68e109498ffc",
+                category: "Sports",
+                stock: 80
+            }
+        ];
+
+        // Display products
+        function displayProducts(productList) {
+            const grid = document.getElementById('featured-products');
+            grid.innerHTML = productList.map(product => `
+                <div class="product-card">
+                    <img src="${product.image_url}" alt="${product.name}" 
+                         style="width:100%; height:200px; object-fit:cover;">
+                    <div class="product-info">
+                        <h3>${product.name}</h3>
+                        <p class="product-description">${product.description.substring(0, 60)}...</p>
+                        <div class="product-price">$${product.price.toFixed(2)}</div>
+                        <button class="btn btn-primary" onclick="addToCart(${product.id})">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Cart functionality
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            cart.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                quantity: 1
+            });
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            
+            // Show notification
+            const notification = document.createElement('div');
+            notification.textContent = `Added ${product.name} to cart!`;
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px;
+                background: #28a745; color: white; padding: 15px;
+                border-radius: 5px; z-index: 9999;
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 2000);
+        }
+
+        function updateCartCount() {
+            document.getElementById('cart-count').textContent = cart.length;
+        }
+
+        function loadMore() {
+            // Show all products
+            displayProducts(products);
+            document.querySelector('.btn-secondary').style.display = 'none';
+        }
+
+        // Mobile menu
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.querySelector('.nav-links').classList.toggle('show');
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Show first 4 products
+            displayProducts(products.slice(0, 4));
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>
